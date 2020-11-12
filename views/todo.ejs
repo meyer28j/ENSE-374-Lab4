@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css" />
+    <title>
+        To Do List
+    </title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm"></div>
+            <section id="title" class="col-sm">
+                <h1 class="text-center marginSpace">
+                    To Do List
+                </h1>
+                <h1 class="text-center marginSpace">
+                    <%=title%>
+                </h1>
+            </section>
+            <div class="col-sm"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm"></div>
+            <section id="accordion" class="col- accordion shadow m-3 p-0">
+                <button id="buttonLogout" class="btn btn-block text-center card-header bg-light" type="button"
+                    data-toggle="collapse" data-target="#logoutCollapse" aria-expanded="false"
+                    aria-controls="logoutCollapse">
+                    <p>Signed in as <span class="link text-primary"><%=username%></span></p>
+                </button>
+                <div id="logoutCollapse" class="collapse" aria-labelledby="buttonLogout" data-parent="#accordion">
+                    <a href="/logout">
+                        <!--<form action="/logout" id="logout" name="logout">-->
+                        <button type="submit" class="btn card-body w-100 bg-warning text-dark">
+                            <h5 class="m-0">Log Out</h5>
+                        </button>
+                        <!--</form>-->
+                    </a>
+                </div>
+            </section>
+            <div class="col-sm"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm"></div>
+            <section class="col- marginSpace">
+                <% 
+                let claimed = false; 
+                let buttonClickRoute = "";
+
+                // purpose: save highest LOADED id so when a new
+                // task is created, you can assign a new, unique id
+                let uniqueId = 0; 
+                
+                for (task of tasks) { 
+                    // console.log(JSON.stringify(task));
+                    if (task.owner == username) { 
+                        claimed = true;
+                        buttonClickRoute = "/abandonOrComplete";
+                    
+                    } else if (task.owner == "undefined") {
+                        claimed = false;
+                        buttonClickRoute = "/claim";
+                        // look at the diagram
+                    } else {
+                        claimed = false;
+                        buttonClickRoute = "this form is invisible to this user";
+                    }
+                    if (task._id >= uniqueId) uniqueId = task._id + 1;
+                %>
+                <form action="<%=buttonClickRoute%>" name="task<%=task._id%>" id="task<%=task._id%>">
+                    <input type="hidden" name="taskId" value="task<%=task._id%>" id="task<%=task._id%>" />
+                    <input type="hidden" name="creator" value="<%=task.creator%>" />
+                    <article class="input-group mb-3<% if (task.cleared) { %> hidden<% } %>">
+
+                        <div class="input-group-prepend<% if (task.owner != username) { %> hidden<% } %>">
+                            <div class="input-group-text">
+                                <input type="checkbox" checked="<%=task.done%>" />
+                            </div>
+                        </div>
+                        <span class="input-group-text form-control<% if (task.done) { %> line-through<% } %>">
+                            <%=task.name%>
+                        </span>
+                        <div
+                            class="input-group-append<% if ((task.owner != username && task.owner != "undefined") || task.done) { %> hidden<% } %>">
+                            <button class="btn btn-outline-secondary"
+                                type="button"><% if (task.owner == "undefined") { %>Claim<% } else if (task.owner == username) { %>Abandon<% } else { %>(invisible)
+                                button<% } %>
+                            </button>
+                        </div>
+                    </article>
+                </form>
+                <% } %>
+
+                <form action="/addTask" method="POST" name="addTask" id="addTask">
+                    <input type="hidden" name="task<%=uniqueId%>" id="task<%=uniqueId%>" value="task<%=uniqueId%>" />
+                    <input type="hidden" name="creator" value="<%=username%>" />
+                    <article class="input-group mb-3">
+                        <div class="input-group-prepend hidden">
+                            <div class="input-group-text">
+                                <input type="checkbox" checked="false" />
+                            </div>
+                        </div>
+                        <input id="newTask" name="newTask" type="text" class="form-control" placeholder="Enter a new task here" />
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="submit" id="buttonAdd">Add</button>
+                        </div>
+                    </article>
+                </form>
+                <form action="/purge" method="POST" name="purge" id="purge">
+                    <article class="input-group mb-3">
+                        <button class="btn btn-outline-secondary" type="submit" id="buttonRemove">Remove
+                            Complete</button>
+                    </article>
+                </form>
+            </section>
+            <div class="col-sm"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" src="js/list.js"></script>
+
+</body>
+
+</html>

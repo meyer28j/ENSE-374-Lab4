@@ -1,0 +1,26 @@
+{
+  "name": "lab3",
+  "version": "1.0.0",
+  "description": "learning exercise on using node and passing data with the controller",
+  "main": "index.js",
+  "scripts": {
+    "test": "console.log(\"index.js loaded successfully.\");"
+  },
+  "author": "Jacob Meyer",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "express-sesssion": "^1.15.5",
+    "fs": "0.0.1-security",
+    "jquery": "^3.5.1",
+    "mongo": "^0.1.0",
+    "mongod": "^2.0.0",
+    "mongoose": "^5.10.13",
+    "noquery": "0.0.3",
+    "passport": "^0.4.1",
+    "passport-local-mongoose": "^6.0.1"
+  }
+}
