@@ -50,12 +50,19 @@
                             <form id="loginForm" action="/login" method="POST">
                                 <div class="form-group">
                                     <label for="loginEmail">Email address</label>
-                                    <!--<input type="email" class="form-control" id="loginEmail">-->
-                                    <input type="text" class="form-control" name="loginEmail" id="loginEmail">
+                                    <!--
+                                    <input type="email" class="form-control" name="loginEmail" id="loginEmail" required autofocus name="username" />
+                                    -->
+                                    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus name="username">
+
                                 </div>
                                 <div class="form-group">
                                     <label for="loginPassword">Password</label>
-                                    <input type="password" class="form-control" name="loginPassword" id="loginPassword">
+                                    <!--
+                                    <input type="password" class="form-control" name="loginPassword" id="loginPassword" required name="password">
+                                    -->
+                                    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
+
                                 </div>
                                 <button type="submit" class="btn btn-primary">Login</button>
                             </form>
@@ -76,13 +83,17 @@
                             <form id="signupForm" action="/register" method="POST">
                                 <div class="form-group">
                                   <label for="signupEmail">Email address</label>
-				  <input type="text" class="form-control" name="signupEmail" id="signupEmail" />
-                                   <!--<input type="email" class="form-control" id="signupEmail"
-                                        aria-describedby="emailHelp">-->
+                                  <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus name="username">
+				  <!--
+                      <input type="email" class="form-control" name="signupEmail" id="signupEmail" required autofocus name="username" />
+                  -->
                                 </div>
                                 <div class="form-group">
                                     <label for="signupPassword">Password</label>
-                                    <input type="password" class="form-control" name="signupPassword" id="signupPassword">
+                                    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
+                                    <!--
+                                    <input type="password" class="form-control" name="signupPassword" id="signupPassword" required name="password">
+                                    -->
                                 </div>
                                 <div class="form-group">
                                     <label for="signupVerification">Verification</label>
