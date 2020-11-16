@@ -1,3 +1,9 @@
+# Task initializer script
+resetTasks.js
+
+# MongoDB users database
+usersDB/
+
 # Test directory
 test/
 

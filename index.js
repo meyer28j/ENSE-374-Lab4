@@ -15,8 +15,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
-// app.use(express.static(__dirname + "/public"));
-// app.use(express.static(__dirname));
 
 app.use(session({
     secret: process.env.SECRET,
@@ -51,31 +49,14 @@ const taskSchema = new mongoose.Schema(
     {
         _id: Number,
         name: String,
-        owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-        creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        //owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        owner: String,
+        //creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        creator: String,
         done: Boolean,
         cleared: Boolean
     });
-// taskSchema.plugin(passportLocalMongoose);
-const Task = new mongoose.model("Task", taskSchema);
-
-/*
-function getAllTasks() {
-    let tasks = [Task];
-    Task.find({}, function(err, results) {
-        if (err) console.log("err");
-        else {
-            console.log("retrieving all tasks");
-            if (results.length !== 0) {
-                for (currentTask of results){
-                    tasks.push(currentTask);
-                }
-            }
-        }
-    });
-    return tasks;
-}
-*/
+const Task = mongoose.model("Task", taskSchema);
 
 const port = 3000;
 app.listen(port, function () {
@@ -91,40 +72,13 @@ app.get("/login", function (request, response) {
     response.render("login");
 });
 
-/*
-app.post("/register", function (request, response) {
-    console.log("User submitted registration information");
-    let emailInput = request.body.signupEmail;
-    let passwordInput = request.body.signupPassword;
-    User.register({ username: emailInput }, passwordInput, function (err, user) {
-        console.log("Registering user...");
-        if (err) {
-            console.log(err);
-            response.redirect("/login");
-        } else {
-            passport.authenticate("local")( request, response, function () {
-                console.log("User " + emailInput + " registered successfully");
-                response.redirect("/todo");
-            });
-            console.log("User authentication failed");
-        }
-    });
-    response.redirect("/login");
-});
-*/
-
-// register route
 app.post("/register", function(req, res) {
     console.log("Registering a new user");
-    // calls a passport-local-mongoose function for registering new users
-    // expect an error if the user already exists!
     User.register({username: req.body.username}, req.body.password, function(err, user){
         if (err) {
             console.log(err);
             res.redirect("/login")
         } else {
-            // authenticate using passport-local
-            // what is this double function syntax?! It's called currying.
             passport.authenticate("local")(req, res, function(){
                 res.redirect("/todo")
             });
@@ -132,28 +86,6 @@ app.post("/register", function(req, res) {
     });
 });
 
-// app.post("/login", function (request, response) {
-//     console.log("user submitted login information");
-//     let loginEmail = request.body.loginEmail;
-//     let loginPassword = request.body.loginPassword;
-//     const userToVerify = new User ({
-//         username: loginEmail,
-//         password: loginPassword
-//     });
-//     console.log("creating user:\nusername: " + loginEmail + "\npassword: " + loginPassword);
-//     request.login(userToVerify, function (err) {
-//         if (err) {
-//             console.log(err);
-//             response.redirect("/login");
-//         } else {
-//             passport.authenticate("local")(request, response, function () {
-//                 response.redirect("/todo");
-//             });
-//         }
-//     });
-// });
-
-// login route
 app.post("/login", function(req, res) {
     console.log("A user is logging in")
     // create a user
@@ -169,7 +101,6 @@ app.post("/login", function(req, res) {
             res.redirect("/")
         } else {
             // success
-            // authenticate using passport-local
             passport.authenticate("local")(req, res, function() {
                 res.redirect("/todo"); 
             });
@@ -181,24 +112,20 @@ app.post("/login", function(req, res) {
 app.get("/todo", function (request, response) {
     console.log("directed to route 'todo'");
     if (request.isAuthenticated()) {
-        console.log("request.user is: " + request.user);
-        response.render("todo", { username: request.user.username, tasks: Task });
+        let allTasks = Task.find();
+        console.log("allTasks: " + allTasks);
+        for (task of allTasks) {
+        console.log("task: " + task);
+        }
+        //response.render("todo", { username: request.user.username, tasks: allTasks });
     } else {
         response.redirect("/login");
     }
-    // response.render("todo", { username: request.user.username, tasks: request.tasks });
 });
 
 app.post("/todo", function (request, response) {
     response.redirect("/todo");
 });
-
-// app.post("/todo", function (request, response) {
-//     console.log("directed to route 'todo'");
-//     let standInTitle = "Stand-In Title";
-//     let taskList = loadAllTaskData();
-//     response.render("list", { title: standInTitle, username: request.query.username, tasks: taskList });
-// });
 
 app.get("/logout", function (request, response) {
     console.log("user has logged out");

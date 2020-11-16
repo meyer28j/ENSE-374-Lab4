@@ -66,14 +66,8 @@
                 // purpose: save highest LOADED id so when a new
                 // task is created, you can assign a new, unique id
                 let uniqueId = 0; 
-                
-                // let tasks = db.tasks.find(function(err, results) {
-                //     if (err) console.log("error retrieving tasks");
-                //     else {
-                //         console.log("retrieving all tasks...");
-                //     }
-                // });
-                console.log("task is: " + tasks + ", " + typeof(tasks));
+                tasks = JSON.stringify(task);
+                console.log("task is: " + tasks);
                 
                 for (task of tasks) { 
                     // console.log(JSON.stringify(task));
